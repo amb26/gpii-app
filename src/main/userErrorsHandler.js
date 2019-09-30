@@ -42,7 +42,7 @@ fluid.defaults("gpii.app.userErrorsHandler", {
         getErrorDetails: {
             funcName: "gpii.app.userErrorsHandler.getErrorDetails",
             args: [
-                "{messageBundles}.model.messages",
+                "{messageBundles}.model.groupedMessages",
                 "{that}.options.messagePrefix",
                 "{that}.options.errorProperties",
                 "{arguments}.0"
@@ -57,14 +57,14 @@ fluid.defaults("gpii.app.userErrorsHandler", {
  * Currently there are three such properties - "title", "subhead", "details".
  * Every message key is expected to follow the format: <errorSupplierComponent>_<errorCode>-<errorProperty>,
  * e.g. GPII_userErrors_KeyInFail-title.
- * @param {Object} messages - Object containing all messages.
+ * @param {Object} groupedMessages - Object containing all messages.
  * @param {String} messagePrefix - The prefix for each error message key
  * @param {String[]} errorProperties - The properties of an error to be looked for
  * @param {String} errorCode - The code of the error that has occurred
  * @return {Object} {{title: String, subhead: String, details: String}}
  */
-gpii.app.userErrorsHandler.getErrorDetails = function (messages, messagePrefix, errorProperties, errorCode) {
-    var userErrorMessages = messages[messagePrefix];
+gpii.app.userErrorsHandler.getErrorDetails = function (groupedMessages, messagePrefix, errorProperties, errorCode) {
+    var userErrorMessages = groupedMessages[messagePrefix];
     return errorProperties.reduce(function (errorDetails, errorProp) {
         var errorPropKey =  errorCode + "-" + errorProp;
         // Extract error errorDetails from the bundle

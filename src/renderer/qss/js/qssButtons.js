@@ -44,6 +44,7 @@
      */
     fluid.defaults("gpii.qss.buttonPresenter", {
         gradeNames: [
+            "gpii.app.localisedMessagesReceiver",
             "gpii.qss.qssKeyListener",
             "gpii.app.hoverable",
             "gpii.app.clickable",

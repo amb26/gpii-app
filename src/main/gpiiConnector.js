@@ -346,7 +346,7 @@ fluid.defaults("gpii.app.dev.gpiiConnector", {
                     func: "gpii.app.dev.gpiiConnector.decoratePreferences",
                     args: [
                         "{app}.systemLanguageListener",
-                        "{messageBundles}.model.messages",
+                        "{messageBundles}.model.groupedMessages",
                         "{that}.options.tweakedSettingOptions",
                         "{arguments}.0"
                     ]
@@ -436,19 +436,19 @@ gpii.app.dev.gpiiConnector.tweakSettingSchemas = function (systemLanguageListene
  * A decorator for the received preferences which applies specific property tweaks where needed.
  * This it to be used as a temporary measure until corresponding functionality is introduced in the gpii-universal.
  * @param {Component} systemLanguageListener - The `gpii.windows.language` instance
- * @param {Object} messages - The messages bundle. This is needed to provide correct (and synced with the QS)
+ * @param {Object} groupedMessages - The messages bundle after grouping. This is needed to provide correct (and synced with the QS)
  * names for different settings
  * @param {Object} tweakedSettingOptions - Useful options for the tweaked settings
  * @param {Preferences} preferences - The preferences that are to be decorated
  */
-gpii.app.dev.gpiiConnector.decoratePreferences = function (systemLanguageListener, messages, tweakedSettingOptions, preferences) {
+gpii.app.dev.gpiiConnector.decoratePreferences = function (systemLanguageListener, groupedMessages, tweakedSettingOptions, preferences) {
     gpii.app.dev.gpiiConnector.applyPrefSetImages(preferences.sets);
 
     // make some tweaks...
     fluid.each(preferences.settingGroups, function (settingGroup) {
         gpii.app.dev.gpiiConnector.applyLivenessFlag(settingGroup.settings);
         gpii.app.dev.gpiiConnector.tweakSettingSchemas(
-            systemLanguageListener, messages[tweakedSettingOptions.qssSettingMessagesPrefix], tweakedSettingOptions, settingGroup.settings);
+            systemLanguageListener, groupedMessages[tweakedSettingOptions.qssSettingMessagesPrefix], tweakedSettingOptions, settingGroup.settings);
     });
 };
 

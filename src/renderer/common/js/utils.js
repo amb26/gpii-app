@@ -173,6 +173,7 @@
      * interpolated, optionally a "values" map can also be given.
      */
     fluid.defaults("gpii.psp.selectorsTextRenderer", {
+        gradeNames: "gpii.app.localisedMessagesReceiver",
         enableRichText: false,
 
         model: {

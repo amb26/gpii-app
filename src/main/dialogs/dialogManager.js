@@ -41,7 +41,9 @@ fluid.defaults("gpii.app.dialogManager.queue", {
     },
 
     components: {
-        dialog: null
+        dialog: {
+            type: "gpii.app.dialogWrapper"
+        }
     },
 
     invokers: {

@@ -33,7 +33,6 @@
      */
     fluid.defaults("gpii.psp.messageBundles", {
         gradeNames: "gpii.app.messageBundles",
-
         invokers: {
             updateLocale: {
                 changePath: "locale",
@@ -94,7 +93,7 @@
     });
 
     /**
-     * Registers a listener for the  `onLocaleChanged` event from the main process.
+     * Registers a listener for the `onLocaleChanged` event from the main process.
      * @param {Object} events - A map of all events for the `channel` component.
      */
     gpii.psp.messageBundles.channel.register = function (events) {

@@ -22,6 +22,7 @@
     /**
      * Represents the QSS stepper widget.
      */
+    // TODO: It is somewhat odd this does not derive from gpii.qssWidget - determine why this is so
     fluid.defaults("gpii.qssWidget.stepper", {
         gradeNames: ["fluid.viewComponent", "gpii.psp.selectorsTextRenderer", "gpii.psp.heightObservable"],
 
@@ -305,20 +306,20 @@
 
         value = parseFloat( (value + step).toPrecision(2) );
         // Handle not given min and max
-        var restrcitedValue = value;
+        var restrictedValue = value;
 
         if (fluid.isValue(schema.max)) {
-            restrcitedValue = Math.min(restrcitedValue, schema.max);
+            restrictedValue = Math.min(restrictedValue, schema.max);
         }
 
         if (fluid.isValue(schema.min)) {
-            restrcitedValue = Math.max(restrcitedValue, schema.min);
+            restrictedValue = Math.max(restrictedValue, schema.min);
         }
 
-        that.applier.change("value", restrcitedValue, null, "fromWidget");
+        that.applier.change("value", restrictedValue, null, "fromWidget");
 
         // Whether a bound was hit
-        return value !== restrcitedValue;
+        return value !== restrictedValue;
     };
 
     /**

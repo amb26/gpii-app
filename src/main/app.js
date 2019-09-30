@@ -107,6 +107,9 @@ fluid.defaults("gpii.app", {
         configurationHandler: {
             type: "gpii.app.siteConfigurationHandler"
         },
+        messageBundles: {
+            type: "gpii.app.messageBundles"
+        },
         userErrorHandler: {
             type: "gpii.app.userErrorsHandler",
             options: {
@@ -386,7 +389,8 @@ fluid.defaults("gpii.app", {
         "onPSPPrerequisitesReady.notifyPSPReady": {
             this: "{that}.events.onPSPReady",
             method: "fire",
-            priority: "last"
+            //priority: "last"
+            priority: "after:fluid-componentConstruction"
         }
 
         // Disabled per: https://github.com/GPII/gpii-app/pull/100#issuecomment-471778768

@@ -25,7 +25,7 @@ var gpii           = fluid.registerNamespace("gpii");
  * Component that controls the tray widgets.
  */
 fluid.defaults("gpii.app.tray", {
-    gradeNames: ["fluid.modelComponent", "{that}.options.trayType"],
+    gradeNames: ["gpii.app.localisedMessagesReceiver", "{that}.options.trayType"],
     icons: {
         keyedIn: "%gpii-app/src/icons/Morphic-tray-icon-green.ico",
         keyedOut: "%gpii-app/src/icons/Morphic-tray-icon-white.ico",

@@ -305,12 +305,12 @@ fluid.defaults("gpii.app.menuInAppDev", {
  * Component to generate the menu tree structure that is relayed to gpii.app for display.
  */
 fluid.defaults("gpii.app.menu", {
-    gradeNames: "fluid.modelComponent",
+    gradeNames: "gpii.app.localisedMessagesReceiver",
     model: {
         // Expected as configuration
-        //keyedInUserToken: null,
-        //snapsetName: null,
-        //preferences: {
+        // keyedInUserToken: null,
+        // snapsetName: null,
+        // preferences: {
         //    sets: null,
         //    activeSet: null
         //},
@@ -338,9 +338,6 @@ fluid.defaults("gpii.app.menu", {
                 type: "fluid.transforms.free",
                 func: "gpii.app.menu.getKeyedInSnapset",
                 args: ["{that}.model.isKeyedIn", "{that}.model.snapsetName", "{that}.model.messages.keyedIn"]
-            },
-            forward: {
-                excludeSource: "init"
             }
         },
         "keyOut": {
@@ -352,9 +349,6 @@ fluid.defaults("gpii.app.menu", {
                     "{that}.model.keyedInUserToken",
                     "{that}.model.messages.keyOut"
                 ]
-            },
-            forward: {
-                excludeSource: "init"
             }
         },
         "showAbout": {
@@ -363,9 +357,6 @@ fluid.defaults("gpii.app.menu", {
                 type: "fluid.transforms.free",
                 func: "gpii.app.menu.getSimpleMenuItem",
                 args: ["{that}.model.messages.about", "onAbout"]
-            },
-            forward: {
-                excludeSource: "init"
             }
         },
         "showQSS": {
@@ -374,9 +365,6 @@ fluid.defaults("gpii.app.menu", {
                 type: "fluid.transforms.free",
                 func: "gpii.app.menu.getSimpleMenuItem",
                 args: ["{that}.model.messages.openQss", "onQss"]
-            },
-            forward: {
-                excludeSource: "init"
             }
         },
         "preferenceSetsMenuItems": {
@@ -385,9 +373,6 @@ fluid.defaults("gpii.app.menu", {
                 type: "fluid.transforms.free",
                 func: "gpii.app.menu.getPreferenceSetsMenuItems",
                 args: ["{that}.model.isKeyedIn", "{that}.model.preferences.sets", "{that}.model.preferences.activeSet"]
-            },
-            forward: {
-                excludeSource: "init"
             }
         },
         "menuTemplate": {
@@ -402,9 +387,6 @@ fluid.defaults("gpii.app.menu", {
                     "@expand:gpii.app.menu.getSeparatorItem()",
                     "{that}.model.keyOut"
                 ]
-            },
-            forward: {
-                excludeSource: "init"
             },
             priority: "last"
         }

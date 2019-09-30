@@ -66,6 +66,7 @@ fluid.defaults("gpii.app.qssWrapper", {
     },
 
     settingsFixturePath: "%gpii-app/testData/qss/settings.json",
+    // TODO: Note that since this initialises statically it will not participate in relocalisation
     loadedSettings: {
         expander: {
             funcName: "gpii.app.qssWrapper.loadSettings",
@@ -73,7 +74,7 @@ fluid.defaults("gpii.app.qssWrapper", {
                 "{assetsManager}",
                 "{systemLanguageListener}.model.installedLanguages",
                 "{messageBundles}.model.locale",
-                "{messageBundles}.model.messages",
+                "{messageBundles}.model.groupedMessages",
                 "{that}.options.settingOptions",
                 "{that}.options.settingsFixturePath",
                 "{that}.options.siteConfig"

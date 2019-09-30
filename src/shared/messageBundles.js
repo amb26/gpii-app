@@ -96,11 +96,11 @@ var gpii = fluid.registerNamespace("gpii");
  * when the locale changes.
  */
 fluid.defaults("gpii.app.messageBundles", {
-    gradeNames: ["fluid.modelComponent", "{that}.options.messageDistributorGrade"],
+    gradeNames: ["fluid.modelComponent"],
 
     model: {
-        locale: null, // the defaultLocale will be used initially
-        messages: {}
+        locale: null, // the defaultLocale will be used if no locale is set
+        groupedMessages: {}
     },
 
     defaultLocale: "en",
@@ -112,16 +112,6 @@ fluid.defaults("gpii.app.messageBundles", {
     modelListeners: {
         locale: {
             func: "{that}.updateMessages"
-        }
-    },
-
-    messageDistributorGrade: {
-        expander: {
-            funcName: "gpii.app.messageBundles.getMessageDistributorGrade",
-            args: [
-                "{that}.options.messageBundles",
-                "{that}.options.defaultLocale"
-            ]
         }
     },
 
@@ -137,31 +127,6 @@ fluid.defaults("gpii.app.messageBundles", {
         }
     }
 });
-
-/**
- * This function creates a `messageDistributor` grade which has a dynamically generated
- * `distributeOptions` block. The name of the grade is returned as a result of this
- * function and is applied to the `messageBundles` component. By using this raw dynamic grade
- * mechanism this component is constructed before the other components. This is important
- * because distributeOptions will be considered only at creation time. This means that the
- * distributor should be created before any other components to which it distributes
- * messages.
- * @param {Object} messageBundles - An object containing all i18n messages for all supported
- * locales
- * @param {String} defaultLocale - A string representing the default locale.
- * @return {String} The name of the distributor grade.
- */
-gpii.app.messageBundles.getMessageDistributorGrade = function (messageBundles, defaultLocale) {
-    var defaultMessages = messageBundles[defaultLocale],
-        distributions = gpii.app.messageBundles.getMessageDistributions(defaultMessages);
-
-    fluid.defaults("gpii.app.messageDistributor", {
-        gradeNames: "fluid.component",
-        distributeOptions: distributions
-    });
-
-    return "gpii.app.messageDistributor";
-};
 
 /**
  * Loads synchronously and parses the messageBundles file.
@@ -195,7 +160,6 @@ gpii.app.messageBundles.loadMessageBundles = function (messageBundlesPath) {
  * @param {String} defaultLocale - The default locale.
  */
 gpii.app.messageBundles.updateMessages = function (that, messageBundles, locale, defaultLocale) {
-    // make sure the locale is in proper state
     locale = locale || "";
 
     var genericLocale = locale.split("-")[0];
@@ -207,7 +171,7 @@ gpii.app.messageBundles.updateMessages = function (that, messageBundles, locale,
     }
 
     var groupedMessages = gpii.app.messageBundles.groupMessagesByComponent(messages);
-    that.applier.change("messages", groupedMessages);
+    that.applier.change("groupedMessages", groupedMessages);
 };
 
 /**
@@ -236,6 +200,9 @@ gpii.app.messageBundles.getSimpleMessageKey = function (messageKey) {
     return messageKey.slice(keyDelimiterIndex + 1);
 };
 
+// TODO: Note that this also compiles messages that do not correspond to grades resolved by gpii.app.localisedMessagesReceiver, 
+// i.e. gpii_app_qss_settings resolved in gpii.app.qssWrapper.applySettingTranslations 
+// and gpii_userErrors in gpii.app.userErrorsHandler.getErrorDetails
 /**
  * Given a map which contains all messages for a given locale, this function groups the
  * messages by component grades.
@@ -257,50 +224,38 @@ gpii.app.messageBundles.groupMessagesByComponent = function (messages) {
     return groupedMessages;
 };
 
-/**
- * Constructs an object which can be used as a `distributeOptions` value to distribute model
- * listeners for updating the messages of i18n components in the application. The keys of the
- * returned object are the names of the components to which the model listeners need to be
- * distributed.
- * @param {Object} currentMessages - A map of all messages for a given locale.
- * @return {Object} A map of namespaced distributeOptions blocks.
- */
-gpii.app.messageBundles.getMessageDistributions = function (currentMessages) {
-    var groupedMessages = gpii.app.messageBundles.groupMessagesByComponent(currentMessages),
-        dependentPath = "{/ %componentName}.options.modelListeners";
+/** A grade used to opt into to distribution of dynamically updated localised messages composed per grade **/
 
-    return fluid.keys(groupedMessages).reduce(function (distributions, componentKey) {
-        var componentName = componentKey.replace(/_/g, ".");
-
-        distributions[componentName] = {
-            target: fluid.stringTemplate(dependentPath, {componentName: componentName}),
-            record: {
-                "{gpii.app.messageBundles}.model.messages": {
-                    funcName: "gpii.app.messageBundles.setComponentMessages",
-                    args: ["{that}", "{change}.value"]
-                }
+fluid.defaults("gpii.app.localisedMessagesReceiver", {
+    gradeNames: "fluid.modelComponent",
+    modelRelay: {
+        composeGradeMessages: {
+            source: "{gpii.app.messageBundles}.model.groupedMessages",
+            target: "{that}.model.messages",
+            singleTransform: {
+                type: "gpii.app.composeGradeMessages",
+                gradeNames: "{that}.options.gradeNames"
             }
-        };
-
-        return distributions;
-    }, {});
-};
+        }
+    }
+});
 
 /**
- * Compiles and sets the messages for a given component. This is done by examining all grade
+ * A model transformation function which compiles and sets the messages for a given component.
+ * This is done by examining all grade
  * names for the component and adding their messages to the resulting set of messages. In
  * case there are messages with the same key for different grade names, the rightmost grade
  * name's messages will have priority.
- * @param {Component} that - The component whose messages need to be compiled and set.
- * @param {Object} messageBundles - A hash containing the messages for the various grade names.
+ * @param {Object} groupedMessages - A hash keyed by the grade name for which the message is destined, compiled into
+ *     {gpii.app.messageBundles}.model.groupedMessages by the action groupMessagesByComponent
+ * @param {TransformSpec} transformSpec - The `transformSpec` structure supplied by the model transformation machinery
+ * @return {Object} The messages appropriate for the targetted components grade
  */
-gpii.app.messageBundles.setComponentMessages = function (that, messageBundles) {
-    var gradeNames = that.options.gradeNames;
-
-    var newMessages = gradeNames.reduce(function (messages, grade) {
+gpii.app.composeGradeMessages = function (groupedMessages, transformSpec) {
+    var gradeNames = transformSpec.gradeNames;
+    var componentMessages = gradeNames.reduce(function (messages, grade) {
         var messageKey = grade.replace(/\./g, "_");
-        return Object.assign(messages, messageBundles[messageKey]);
+        return Object.assign(messages, groupedMessages[messageKey]);
     }, {});
-
-    that.applier.change("messages", newMessages);
+    return componentMessages;
 };

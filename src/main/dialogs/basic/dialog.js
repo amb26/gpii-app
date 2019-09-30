@@ -49,7 +49,7 @@ fluid.registerNamespace("gpii.app.dialog");
  *   `fileSuffixPath = "waitDialog/index.html"`
  */
 fluid.defaults("gpii.app.dialog", {
-    gradeNames: ["fluid.modelComponent", "gpii.app.resizable"],
+    gradeNames: ["gpii.app.localisedMessagesReceiver", "gpii.app.resizable"],
 
     model: {
         isShown: false,
@@ -194,7 +194,7 @@ fluid.defaults("gpii.app.dialog", {
             args: ["{that}"]
         },
         "onCreate.registerDialogReadyListener": {
-            funcName: "gpii.app.dialog.registerDailogReadyListener",
+            funcName: "gpii.app.dialog.registerDialogReadyListener",
             args: "{that}"
         },
         "onCreate.applyScaleFactor": {
@@ -454,7 +454,7 @@ gpii.app.dialog.setDialogZoom = function (dialog, scaleFactor) {
  * the id of a `gpii.app.dialog` instance.
  * @param {Component} that - The instance of `gpii.app.dialog` component
  */
-gpii.app.dialog.registerDailogReadyListener = function (that) {
+gpii.app.dialog.registerDialogReadyListener = function (that) {
     // Use a local function so that we can de-register the channel listener when needed
     function handleReadyResponse(event, relatedCmpId) {
         if (that.id === relatedCmpId) {

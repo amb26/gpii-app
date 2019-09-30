@@ -22,6 +22,7 @@
     /**
      * QSS Volume widget
      */
+    // TODO: It is somewhat odd this does not derive from gpii.qssWidget - determine why this is so
     fluid.defaults("gpii.qssWidget.volume", {
         gradeNames: ["fluid.viewComponent", "gpii.psp.heightObservable", "gpii.psp.selectorsTextRenderer"],
 
