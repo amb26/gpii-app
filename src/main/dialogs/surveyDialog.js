@@ -33,7 +33,7 @@ require("./basic/dialogWrapper.js");
  * be destroyed.
  *
  * Please note that the communication between the Infusion component and the webview
- * is not direct. The `BrowserWindow` acts as an itermediary and is responsible for
+ * is not direct. The `BrowserWindow` acts as an intermediary and is responsible for
  * forwarding the corresponding IPC messages.
  */
 fluid.defaults("gpii.app.surveyDialog", {

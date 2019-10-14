@@ -29,7 +29,6 @@ require("../../../shared/channelUtils.js");
 fluid.defaults("gpii.app.qss", {
     gradeNames: ["gpii.app.dialog", "gpii.app.dialog.offScreenHidable", "gpii.app.blurrable"],
 
-
     dialogContentMetrics: {
         // metrics are in px
         // The width of the logo together with its left and right margins
@@ -66,6 +65,10 @@ fluid.defaults("gpii.app.qss", {
         }
     },
 
+    modelParamMap: {
+        settings: "settings"
+    },
+
     config: {
         destroyOnClose: false,
         awaitWindowReadiness: true,
@@ -78,7 +81,6 @@ fluid.defaults("gpii.app.qss", {
             transparent: false
         },
         params: {
-            settings: "{that}.model.settings",
             siteConfig: "{that}.options.siteConfig"
         },
         fileSuffixPath: "qss/index.html"

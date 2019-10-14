@@ -31,12 +31,14 @@ gpii.tests.qss.simulateShortcut = function (dialog, shortcut) {
 };
 
 gpii.tests.qss.getFocusedElementIndex = function () {
+    debugger;
     // Note that the elements will be returned in the order in which they appear in the DOM.
     var qssButtons = jQuery(".fl-qss-button"),
         focusedElement = jQuery(".fl-focused")[0];
     return jQuery.inArray(focusedElement, qssButtons);
 };
 
+debugger;
 gpii.tests.qss.pressKey = function (key, modifiers) {
     return {
         funcName: "gpii.tests.qss.simulateShortcut",

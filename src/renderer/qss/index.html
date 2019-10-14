@@ -26,6 +26,15 @@
 
         <script type="text/javascript" src="../../shared/messageBundles.js"></script>
         <script type="text/javascript" src="../common/js/messageBundles.js"></script>
+        <script>
+    document.addEventListener("keydown", function (e) {
+        if (e.which === 123) {
+            require('remote').getCurrentWindow().toggleDevTools();
+        } else if (e.which === 116) {
+            location.reload();
+        }
+    });
+    </script>
     </head>
     <body>
         <div class="flc-quickSetStrip fl-qss">

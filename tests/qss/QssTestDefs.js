@@ -270,6 +270,7 @@ gpii.tests.qss.testDefs = {
         }],
         // Commons
         gpii.tests.qss.navigationTests,
+/*
         qssInstalledLanguages,
         gpii.tests.qss.tooltipTests,
         gpii.tests.qss.widgetClosingBehaviourTests,
@@ -290,6 +291,6 @@ gpii.tests.qss.testDefs = {
         gpii.tests.qss.officeSimplifyTests,
         gpii.tests.qss.menuTests,
         gpii.tests.qss.stepperTests,
-        gpii.tests.qss.translationsTests
+        gpii.tests.qss.translationsTests*/
     )
 };

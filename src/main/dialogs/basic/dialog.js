@@ -19,13 +19,20 @@ var fluid         = require("infusion");
 var BrowserWindow = require("electron").BrowserWindow;
 var ipcMain       = require("electron").ipcMain;
 
-var gpii  = fluid.registerNamespace("gpii");
+var gpii = fluid.registerNamespace("gpii");
 
 require("./resizable.js");
 
 fluid.registerNamespace("gpii.app.dialog");
 
-
+gpii.app.resolveExpectedValue = function (that, path) {
+    path = path.substring(1);
+    var resolved = fluid.expandOptions(path, that);
+    if (!resolved) {
+        fluid.fail("Failed to resolve expected value ", path);
+    }
+    return resolved;
+};
 /**
  * Base dialog component that provides initialization of an Electron `BrowserWindow` and the generation of
  * the file URL that is to be loaded in the same `BrowserWindow`.
@@ -118,19 +125,24 @@ fluid.defaults("gpii.app.dialog", {
         disablePinchZoom: true,
 
         // params for the BrowserWindow instance
-        params: null,
+        params: {},
+
+        // Resolve GPII-4147 by encoding a map of model paths to be read in order to construct initial dialog params
+        // Target params on the left, source in model on the right
+        modelParamMap: {
+        },
 
         // dialog creation options
         attrs: {        // raw attributes used in `BrowserWindow` generation
             width: 800,
             height: 600,
             show: false,
-            frame: false,
+            frame: true,
             transparent: true,
             alwaysOnTop: true,
             skipTaskbar: true,
             type: "toolbar",
-            resizable: false
+            resizable: true
         },
         filePrefixPath: "src/renderer",
         fileSuffixPath: null,           // e.g. "waitDialog/index.html"
@@ -144,30 +156,43 @@ fluid.defaults("gpii.app.dialog", {
             }
         }
     },
-    members: {
-        /**
-         * Blurrable dialogs will have the `gradeNames` property which will hold all gradeNames
-         * of the containing component. Useful when performing checks about the component if
-         * only its dialog is available. An example of such a situation is when retrieving the
-         * currently focused window via the static method `BrowserWindow.getFocusedWindow`. This
-         * function returns an Electron's `BrowserWindow` instance which will have the `gradeNames`
-         * property and there will be no need to look up the Infusion component if only its grades
-         * can suffice for whatever checks are performed.
-         * Please see `blurrable.js` for how this property is used so that it can be determined if
-         * the newly focused window is "linked" to the current window (with respect to the blurring
-         * behavior).
-         */
-        dialog: {
-            expander: {
-                funcName: "gpii.app.dialog.makeDialog",
-                args: [
-                    "{that}",
-                    "{that}.options.config.attrs",
-                    "{that}.options.config.url",
-                    "{that}.options.config.params"
-                ]
+    dynamicComponents: {
+        // Resolution for GPII-4147 to defer construction of the dialog until the component's model has been resolved
+        dialogLoader: {
+            type: "fluid.modelComponent",
+            source: "{that}.model",
+            options: {
+                members: {
+                    /**
+                     * Blurrable dialogs will have the `gradeNames` property which will hold all gradeNames
+                     * of the containing component. Useful when performing checks about the component if
+                     * only its dialog is available. An example of such a situation is when retrieving the
+                     * currently focused window via the static method `BrowserWindow.getFocusedWindow`. This
+                     * function returns an Electron's `BrowserWindow` instance which will have the `gradeNames`
+                     * property and there will be no need to look up the Infusion component if only its grades
+                     * can suffice for whatever checks are performed.
+                     * Please see `blurrable.js` for how this property is used so that it can be determined if
+                     * the newly focused window is "linked" to the current window (with respect to the blurring
+                     * behavior).
+                     */
+                    dialog: {
+                        expander: {
+                            funcName: "gpii.app.dialog.makeDialog",
+                            args: [
+                                "{gpii.app.dialog}",
+                                "{gpii.app.dialog}.options.config.attrs",
+                                "{gpii.app.dialog}.options.config.url",
+                                "{gpii.app.dialog}.options.config.params",
+                                "{gpii.app.dialog}.options.modelParamMap"
+                            ]
+                        }
+                    }
+                },              
             }
         }
+    },
+    members: {
+        dialog: "@expand:gpii.app.resolveExpectedValue({that}, !{that}.dialogLoader.dialog)"
     },
 
     modelListeners: {
@@ -320,14 +345,14 @@ gpii.app.dialog.buildFileUrl = function (prefixPath, suffixPath) {
 /**
  * Creates a dialog. This is done upfront to avoid the delay from creating a new
  * dialog every time the displayed content should change.
- * @param {Component} that - The `gpii.app.dialog` instance
+ * @param {gpii.app.dialog} that - The `gpii.app.dialog` instance
  * @param {Object} windowOptions - The raw Electron `BrowserWindow` settings
  * @param {String} url - The URL to be loaded in the `BrowserWindow`
- * @param {Object} params -  Options that are to be supplied to the render process of
+ * @param {Object} paramsOption -  Options that are to be supplied to the render process of
  * the newly created BrowserWindow
  * @return {BrowserWindow} The Electron `BrowserWindow` component
  */
-gpii.app.dialog.makeDialog = function (that, windowOptions, url, params) {
+gpii.app.dialog.makeDialog = function (that, windowOptions, url, paramsOption, modelParamMap) {
     var dialog = new BrowserWindow(windowOptions);
 
     dialog.loadURL(url);
@@ -338,9 +363,16 @@ gpii.app.dialog.makeDialog = function (that, windowOptions, url, params) {
      */
     dialog.relatedCmpId = that.id;
 
+    var modelParams = {};
+    fluid.each(modelParamMap, function (targetPath, sourcePath) {
+        var sourceValue = fluid.get(that.model, sourcePath);
+        fluid.set(modelParams, targetPath, sourceValue);
+    });
+    var params = fluid.extend(true, {}, paramsOption, modelParams);
+    
     // Approach for sharing initial options for the renderer process
     // proposed in: https://github.com/electron/electron/issues/1095
-    dialog.params = params || {};
+    dialog.params = params;
 
     if (!that.options.config.destroyOnClose) {
         // As proposed in https://github.com/electron/electron/issues/6702

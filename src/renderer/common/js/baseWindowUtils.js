@@ -61,7 +61,7 @@
                 funcName: "gpii.psp.channel.notifyChannel",
                 args: [
                     "onDialogReady",
-                    // use the main component gradeName as a unique dialog identifier
+                    // use the main component's id as a unique dialog identifier
                     electron.remote.getCurrentWindow().relatedCmpId
                 ],
                 priority: "last"

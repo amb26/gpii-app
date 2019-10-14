@@ -200,8 +200,8 @@ gpii.app.messageBundles.getSimpleMessageKey = function (messageKey) {
     return messageKey.slice(keyDelimiterIndex + 1);
 };
 
-// TODO: Note that this also compiles messages that do not correspond to grades resolved by gpii.app.localisedMessagesReceiver, 
-// i.e. gpii_app_qss_settings resolved in gpii.app.qssWrapper.applySettingTranslations 
+// TODO: Note that this also compiles messages that do not correspond to grades resolved by gpii.app.localisedMessagesReceiver,
+// i.e. gpii_app_qss_settings resolved in gpii.app.qssWrapper.applySettingTranslations
 // and gpii_userErrors in gpii.app.userErrorsHandler.getErrorDetails
 /**
  * Given a map which contains all messages for a given locale, this function groups the

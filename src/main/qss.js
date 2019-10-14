@@ -34,7 +34,6 @@ require("./common/undoStack.js");
 fluid.defaults("gpii.app.qssWrapper", {
     gradeNames: "fluid.modelComponent",
 
-
     /*
      * Additional options for QSS settings. These are options that are always
      * valid and may be dependent on some local configuration.

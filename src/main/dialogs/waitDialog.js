@@ -43,6 +43,7 @@ fluid.defaults("gpii.app.waitDialog", {
         isShown: {
             funcName: "gpii.app.waitDialog.toggle",
             args: ["{that}", "{change}.value"],
+            priority: "last",
             namespace: "impl"
         }
     },
