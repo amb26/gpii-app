@@ -79,8 +79,9 @@
             getHandlerType: {
                 funcName: "gpii.qss.list.getHandlerType",
                 args: [
-                    "{that}",
-                    "{arguments}.0" // item
+                    "{arguments}.0", // item
+                    "{that}.options.handlerGrades",
+                    "{that}.options.defaultHandlerGrade"
                 ]
             }
         }
@@ -93,11 +94,11 @@
      * @param {Object} setting - The setting for which the handler type is to be determined.
      * @return {String} The grade name of the setting's handler.
      */
-    gpii.qss.list.getHandlerType = function (that, setting) {
-        var handlerGrades = that.options.handlerGrades,
-            settingType = setting.schema.type;
+    gpii.qss.list.getHandlerType = function (setting, handlerGrades, defaultHandlerGrade) {
+        // console.log("getHandlerType for ", setting);
+        var settingType = setting.schema.type;
 
-        return handlerGrades[settingType] || that.options.defaultHandlerGrade;
+        return handlerGrades[settingType] || defaultHandlerGrade;
     };
 
     /**

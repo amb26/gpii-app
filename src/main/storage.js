@@ -34,11 +34,16 @@ fluid.defaults("gpii.app.storage", {
     gradeNames: ["fluid.modelComponent"],
 
     storageFilePath: "storage.json",
+    components: {
+        settingsDir: {
+            type: "gpii.settingsDir"
+        }
+    },
 
     absoluteStorageFilePath: {
         expander: {
             funcName: "gpii.app.storage.getAbsoluteStorageFileName",
-            args: ["{that}.options.storageFilePath"]
+            args: ["{that}.options.storageFilePath", "{that}.settingsDir"]
         }
     },
 
@@ -81,9 +86,8 @@ fluid.defaults("gpii.app.storage", {
  * @param {String} storageFilePath - The simple name of the file.
  * @return {String} The absolute path to the storage file.
  */
-gpii.app.storage.getAbsoluteStorageFileName = function (storageFilePath) {
-    var settingsDirComponent = gpii.settingsDir(),
-        gpiiSettingsDir = settingsDirComponent.getGpiiSettingsDir();
+gpii.app.storage.getAbsoluteStorageFileName = function (storageFilePath, settingsDirComponent) {
+    var gpiiSettingsDir = settingsDirComponent.getGpiiSettingsDir();
 
     return fluid.stringTemplate("%gpiiSettingsDir/%storageFilePath", {
         gpiiSettingsDir: gpiiSettingsDir,

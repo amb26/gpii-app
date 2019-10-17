@@ -161,6 +161,7 @@ fluid.defaults("gpii.app.dialog", {
         dialogLoader: {
             type: "fluid.modelComponent",
             source: "{that}.model",
+//            sources: [1],
             options: {
                 members: {
                     /**
