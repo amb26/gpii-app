@@ -76,12 +76,10 @@
                             }
                         }
                     },
-                    dynamicContainerMarkup: {
-                        container: "<div role=\"radio\" class=\"%containerClass fl-qssWidgetMenu-item fl-focusable\" tabindex=\"0\"></div>",
-                        containerClassPrefix: "flc-qssWidgetMenu-item"
+                    markup: {
+                        elementContainer: "<div role=\"radio\" class=\"fl-qssWidgetMenu-item fl-focusable\" tabindex=\"0\">%children</div>"
                     },
-                    handlerType: "gpii.qssWidget.office.presenter",
-                    markup: null,
+                    defaultElementGrade: "gpii.qssWidget.office.presenter",
                     styles: {
                         disabled: "disabled"
                     },
@@ -90,7 +88,7 @@
                     },
                     listeners: {
                         "onCreate.enable": {
-                            this: "{that}.container",
+                            "this": "{that}.container",
                             method: "removeClass",
                             args: ["{that}.options.styles.disabled"]
                         }
@@ -347,11 +345,11 @@
         },
         styles: {
             active: "fl-qssWidgetMenu-active",
-            default: "fl-qssWidgetMenu-default"
+            "default": "fl-qssWidgetMenu-default"
         },
         modelListeners: {
             item: {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "text",
                 args: ["{that}.model.item.value"]
             }

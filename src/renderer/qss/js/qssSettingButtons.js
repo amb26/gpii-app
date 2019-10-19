@@ -30,7 +30,7 @@
 
         model: {
             item: {
-                value: null
+                value: undefined
             },
             value: "{that}.model.item.value"
         },
@@ -84,9 +84,9 @@
         gradeNames: ["gpii.qss.widgetButtonPresenter"],
         model: {
             messages: {
-                caption: null
+                caption: undefined
             },
-            caption: null
+            caption: undefined
         },
         modelRelay: {
             "caption": {
@@ -100,7 +100,7 @@
         },
         modelListeners: {
             caption: {
-                this: "{that}.dom.caption",
+                "this": "{that}.dom.caption",
                 method: "text",
                 args: ["{change}.value"]
             }
@@ -127,7 +127,7 @@
         gradeNames: ["gpii.qss.widgetButtonPresenter"],
         model: {
             messages: {
-                caption: null
+                caption: undefined
             },
             item: {}
         },
@@ -146,7 +146,7 @@
         },
         modelListeners: {
             caption: {
-                this: "{that}.dom.caption",
+                "this": "{that}.dom.caption",
                 method: "text",
                 args: ["{change}.value"]
             }

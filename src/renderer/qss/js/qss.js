@@ -20,16 +20,16 @@
 
     /**
      * Represents the list of QSS settings. It renders the settings and listens for events
-     * triggered by the buttons. The `handlerGrades` hash maps the type of a setting to the
+     * triggered by the buttons. The `elementGrades` hash maps the type of a setting to the
      * gradeName of the handler which will present the corresponding setting button in the
-     * QSS. If for a given setting type there is no entry in the `handlerGrades` hash, the
-     * the `defaultHandlerGrade` will be used for its presenter.
+     * QSS. If for a given setting type there is no entry in the `elementGrades` hash, the
+     * the `defaultElementGrade` will be used for its presenter.
      */
     fluid.defaults("gpii.qss.list", {
         gradeNames: ["gpii.psp.repeater"],
 
-        defaultHandlerGrade: "gpii.qss.buttonPresenter",
-        handlerGrades: {
+        defaultElementGrade: "gpii.qss.buttonPresenter",
+        elementGrades: {
             "boolean":           "gpii.qss.toggleButtonPresenter",
             "number":            "gpii.qss.widgetButtonPresenter",
             "string":            "gpii.qss.widgetButtonPresenter",
@@ -46,17 +46,9 @@
             "disabled":          "gpii.qss.disabledButtonPresenter",
             "separator":         "gpii.qss.separatorButtonPresenter"
         },
-
-        dynamicContainerMarkup: {
-            container:
-                "<div class=\"%containerClass fl-focusable\">" +
-                "</div>",
-            containerClassPrefix: "fl-qss-button"
+        markup: {
+            elementContainer: "<div class=\"fl-qss-button fl-focusable\">%children</div>"
         },
-        markup: "<div class=\"flc-qss-btnChangeIndicator fl-qss-btnChangeIndicator\"></div>" +
-                "<div class=\"flc-qss-btnImage fl-qss-btnImage\"></div>" +
-                "<span class=\"flc-qss-btnLabel fl-qss-btnLabel\"></span>" +
-                "<div class=\"flc-qss-btnCaption fl-qss-btnCaption\"></div>",
 
         events: {
             onButtonFocusRequired: null,
@@ -76,29 +68,31 @@
         },
 
         invokers: {
-            getHandlerType: {
-                funcName: "gpii.qss.list.getHandlerType",
+            getElementGrade: {
+                funcName: "gpii.qss.list.getElementGrade",
                 args: [
                     "{arguments}.0", // item
-                    "{that}.options.handlerGrades",
-                    "{that}.options.defaultHandlerGrade"
+                    "{that}.options.elementGrades",
+                    "{that}.options.defaultElementGrade"
                 ]
             }
         }
     });
 
     /**
-     * Returns the correct handler type (a grade inheriting from `gpii.qss.buttonPresenter`)
+     * Returns the correct list element grade (a grade inheriting from `gpii.qss.buttonPresenter`)
      * for the given setting depending on its type.
-     * @param {Component} that - The `gpii.qss.list` instance.
      * @param {Object} setting - The setting for which the handler type is to be determined.
+     * @param {Object.<String, String>} elementGrades - Map of schema type field to handling grade
+     * @param {String} defaultElementGrade - The grade to be used in the case there is no match for the schema type
+     * in `elementGrades`
      * @return {String} The grade name of the setting's handler.
      */
-    gpii.qss.list.getHandlerType = function (setting, handlerGrades, defaultHandlerGrade) {
-        // console.log("getHandlerType for ", setting);
+    gpii.qss.list.getElementGrade = function (setting, elementGrades, defaultElementGrade) {
+        console.log("getElementGrade for ", setting);
         var settingType = setting.schema.type;
 
-        return handlerGrades[settingType] || defaultHandlerGrade;
+        return elementGrades[settingType] || defaultElementGrade;
     };
 
     /**
@@ -166,7 +160,7 @@
             },
 
             onQssLogoToggled: {
-                this: "{that}.dom.logo",
+                "this": "{that}.dom.logo",
                 method: "toggle",
                 args: ["{arguments}.0"]
             }

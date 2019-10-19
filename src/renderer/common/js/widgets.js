@@ -19,6 +19,8 @@
     var gpii = fluid.registerNamespace("gpii");
 
     fluid.registerNamespace("gpii.psp.widgets");
+    // TODO: This file, along with many others in "common" belongs in "renderer"
+    // TODO: Remove remaining use of "PSP" namespace
 
     /**
      * XXX currently, we abuse a misbehavior of expanding the `model` options, even if there's been expansion
@@ -42,45 +44,15 @@
         }
     });
 
-    fluid.defaults("gpii.psp.widgets.dropdown", {
-        gradeNames: ["gpii.psp.widgets.attrsExpander", "fluid.rendererComponent"],
-        model: {
-            optionNames: [],
-            optionList: [],
-            selection: null
-        },
-        modelListeners: {
-            "": {
-                this: "{that}",
-                method: "refreshView",
-                excludeSource: "init"
-            }
-        },
-        attrs: {
-            //"aria-labelledby": null
-        },
-        selectors: {
-            options: ".flc-dropdown-options"
-        },
-        protoTree: {
-            options: {
-                optionnames: "${optionNames}",
-                optionlist: "${optionList}",
-                selection: "${selection}"
-            }
-        },
-        listeners: {
-            "onCreate.addAttrs": {
-                "this": "{that}.dom.options",
-                method: "attr",
-                args: ["{that}.options.attrs"]
-            }
-        },
-        renderOnInit: true
-    });
-
-    fluid.defaults("gpii.psp.widgets.imageDropdownPresenter", {
+    fluid.defaults("gpii.psp.widgets.imageDropdownElement", {
         gradeNames: "fluid.viewComponent",
+
+        markup: {
+            body: "<a href=\"#\">" +
+                      "<img class=\"flc-imageDropdown-itemImage\">" +
+                      "<span class=\"flc-imageDropdown-itemText\"></span>" +
+                  "</a>"
+        },
 
         selectors: {
             itemImage: ".flc-imageDropdown-itemImage",
@@ -97,7 +69,7 @@
 
         listeners: {
             "onCreate.addClickHandler": {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "click",
                 args: "{that}.updateSelection"
             }
@@ -105,24 +77,24 @@
 
         modelListeners: {
             "item.name": {
-                this: "{that}.dom.itemText",
+                "this": "{that}.dom.itemText",
                 method: "text",
                 args: ["{change}.value"]
             },
             "item.imageSrc": {
-                this: "{that}.dom.itemImage",
+                "this": "{that}.dom.itemImage",
                 method: "attr",
                 args: ["src", "{change}.value"]
             },
             "{imageDropdown}.model.selection": {
-                funcName: "gpii.psp.widgets.imageDropdownPresenter.applyStyles",
+                funcName: "gpii.psp.widgets.imageDropdownElement.applyStyles",
                 args: ["{change}.value", "{that}.model.item", "{that}.container", "{that}.options.styles"]
             }
         },
 
         invokers: {
             updateSelection: {
-                this: "{dropdownItems}",
+                "this": "{dropdownItems}",
                 method: "updateSelection",
                 args: ["{that}.model.item"]
             }
@@ -138,7 +110,7 @@
      * @param {Object} styles - A hash containing mapping between CSS class
      * keys and class names.
      */
-    gpii.psp.widgets.imageDropdownPresenter.applyStyles = function (selection, item, container, styles) {
+    gpii.psp.widgets.imageDropdownElement.applyStyles = function (selection, item, container, styles) {
         container.toggleClass(styles.active, item.path === selection);
     };
 
@@ -176,7 +148,7 @@
                 ]
             },
             items: {
-                this: "{that}.events.onItemsChanged",
+                "this": "{that}.events.onItemsChanged",
                 method: "fire"
             }
         },
@@ -225,23 +197,12 @@
                         items: "{imageDropdown}.model.items",
                         selection: "{imageDropdown}.model.selection"
                     },
-                    dynamicContainerMarkup: {
-                        container: "<li class=\"%containerClass\"></li>",
-                        containerClassPrefix: "flc-imageDropdown-item"
-                    },
-                    handlerType: "gpii.psp.widgets.imageDropdownPresenter",
                     markup: {
-                        dropdownItem:
-                            "<a href=\"#\">" +
-                                "<img class=\"flc-imageDropdown-itemImage\">" +
-                                "<span class=\"flc-imageDropdown-itemText\"></span>" +
-                            "</a>"
+                        elementContainer: "<li class=\"flc-imageDropdown-item\">%children</li>"
                     },
+                    defaultElementGrade: "gpii.psp.widgets.imageDropdownElement",
+
                     invokers: {
-                        getMarkup: {
-                            funcName: "fluid.identity",
-                            args: ["{that}.options.markup.dropdownItem"]
-                        },
                         updateSelection: {
                             changePath: "selection",
                             value: "{arguments}.0.path"
@@ -363,7 +324,7 @@
             // Remove the handlers which detect activation of the component using Spacebar and Enter.
             // Useful when the same DOM element will be used again (e.g. in the QSS toggle menu).
             "onDestroy.removeElementListeners": {
-                this: "{that}.dom.control",
+                "this": "{that}.dom.control",
                 method: "off",
                 args: ["fluid-activate"]
             }
@@ -430,54 +391,4 @@
         }
     });
 
-    fluid.defaults("gpii.psp.widgets.multipicker", {
-        gradeNames: ["fluid.rendererComponent", "gpii.psp.widgets.attrsExpander"],
-        model: {
-            values: [],
-            names: [],
-            value: null
-        },
-        modelListeners: {
-            "": {
-                this: "{that}",
-                method: "refreshView",
-                excludeSource: "init"
-            }
-        },
-        attrs: {
-            // "aria-labelledby": null
-            // name: null
-        },
-        selectors: {
-            inputGroup: ".flc-multipicker",
-            item: ".flc-multipickerItem",
-            input: ".flc-multipickerInput",
-            label: ".flc-multipickerLabel"
-        },
-        repeatingSelectors: ["item"],
-        selectorsToIgnore: ["inputGroup"],
-        protoTree: {
-            expander: {
-                type: "fluid.renderer.selection.inputs",
-                rowID: "item",
-                inputID: "input",
-                labelID: "label",
-                selectID: "{that}.options.attrs.name",
-                tree: {
-                    optionnames: "${names}",
-                    optionlist: "${values}",
-                    selection: "${value}"
-                }
-            }
-        },
-        listeners: {
-            "onCreate.addAttrs": {
-                "this": "{that}.dom.inputGroup",
-                method: "attr",
-                // may apply additional unused attributes
-                args: ["{that}.options.attrs"]
-            }
-        },
-        renderOnInit: true
-    });
 })(fluid);

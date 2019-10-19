@@ -84,6 +84,7 @@ fluid.defaults("gpii.app.storage", {
  * Returns the absolute path in the file system of the file where the `storage` component will
  * save its model and from where the saved data will be fetched.
  * @param {String} storageFilePath - The simple name of the file.
+ * @param {gpii.settingsDir} settingsDirComponent - The settingsDir component determining the location of the GPII settings directory
  * @return {String} The absolute path to the storage file.
  */
 gpii.app.storage.getAbsoluteStorageFileName = function (storageFilePath, settingsDirComponent) {

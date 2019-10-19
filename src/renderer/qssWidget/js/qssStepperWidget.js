@@ -22,7 +22,7 @@
     /**
      * Represents the QSS stepper widget.
      */
-    // TODO: It is somewhat odd this does not derive from gpii.qssWidget - determine why this is so
+    // TODO: We need a visible base grade for these widget grades
     fluid.defaults("gpii.qssWidget.stepper", {
         gradeNames: ["fluid.viewComponent", "gpii.psp.selectorsTextRenderer", "gpii.psp.heightObservable"],
 
@@ -379,12 +379,10 @@
         //
         // Repeater stuff
         //
-        dynamicContainerMarkup: {
-            container: "<div role='radio' class='%containerClass fl-qssStepperWidget-indicator' tabindex='-1'></div>",
-            containerClassPrefix: "flc-qssStepperWidget-indicator"
+        markup: {
+            elementContainer: "<div role='radio' class='fl-qssStepperWidget-indicator' tabindex='-1'>%children</div>"
         },
-        handlerType: "gpii.qssWidget.stepper.indicator.presenter",
-        markup: null,
+        defaultElementGrade: "gpii.qssWidget.stepper.indicator.presenter",
 
         //
         // Custom

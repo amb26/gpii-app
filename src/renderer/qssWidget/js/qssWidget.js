@@ -39,10 +39,11 @@
     });
 
     /**
-     * A wrapper for the QSS widget (either a menu or a stepper) which also contains
+     * A wrapper for a QSS widget (either a menu or a stepper) which also contains
      * the necessary components for managing focus, communication with the main process,
      * showing the "Learn more" links, etc.
      */
+// TODO: Rename this since it has a confusingly brief name suggesting that it should be the base grade for all widgets in the QSS
     fluid.defaults("gpii.psp.qssWidget", {
         gradeNames: ["fluid.viewComponent"],
 
@@ -382,7 +383,7 @@
 
         modelListeners: {
             "messages.learnMore": {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "text",
                 args: ["{change}.value"]
             }

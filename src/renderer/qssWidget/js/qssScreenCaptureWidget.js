@@ -45,8 +45,8 @@
             repeater: {
                 // whenever the setting changes (e.g. if the change is made via the PSP)
                 type: "gpii.psp.repeater",
-                container: "{screenCapture}.dom.menuControls",
                 options: {
+                    parentContainer: "{screenCapture}.dom.menuControls",
                     model: {
                         disabled: "{screenCapture}.model.disabled",
                         value: "{screenCapture}.model.setting.value",
@@ -64,12 +64,10 @@
                             }
                         }
                     },
-                    dynamicContainerMarkup: {
-                        container: "<div role=\"radio\" class=\"%containerClass fl-qssWidgetMenu-item fl-focusable\" tabindex=\"0\"></div>",
-                        containerClassPrefix: "flc-qssWidgetMenu-item"
+                    markup: {
+                        elementContainer: "<div role=\"radio\" class=\"fl-qssWidgetMenu-item fl-focusable\" tabindex=\"0\">%children</div>"
                     },
-                    handlerType: "gpii.qssWidget.screenCapture.presenter",
-                    markup: null,
+                    defaultElementGrade: "gpii.qssWidget.screenCapture.presenter",
                     styles: {
                         disabled: "disabled"
                     },
@@ -88,7 +86,7 @@
                     },
                     listeners: {
                         "onCreate.enable": {
-                            this: "{that}.container",
+                            "this": "{that}.container",
                             method: "removeClass",
                             args: ["{that}.options.styles.disabled"]
                         }
@@ -222,11 +220,11 @@
         },
         styles: {
             active: "fl-qssWidgetMenu-active",
-            default: "fl-qssWidgetMenu-default"
+            "default": "fl-qssWidgetMenu-default"
         },
         modelListeners: {
             item: {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "text",
                 args: ["{that}.model.item.value"]
             },

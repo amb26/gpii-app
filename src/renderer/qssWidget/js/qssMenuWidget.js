@@ -70,12 +70,10 @@
                             }
                         }
                     },
-                    dynamicContainerMarkup: {
-                        container: "<div role=\"radio\" class=\"%containerClass fl-qssWidgetMenu-item fl-focusable\" tabindex=\"0\"></div>",
-                        containerClassPrefix: "flc-qssWidgetMenu-item"
+                    markup: {
+                        elementContainer: "<div role=\"radio\" class=\"fl-qssWidgetMenu-item fl-focusable\" tabindex=\"0\">%children</div>"
                     },
-                    handlerType: "gpii.qssWidget.menu.presenter",
-                    markup: null,
+                    defaultElementGrade: "gpii.qssWidget.menu.presenter",
                     styles: {
                         disabled: "disabled"
                     },
@@ -96,7 +94,7 @@
                     },
                     listeners: {
                         "onCreate.enable": {
-                            this: "{that}.container",
+                            "this": "{that}.container",
                             method: "removeClass",
                             args: ["{that}.options.styles.disabled"]
                         }
@@ -235,15 +233,15 @@
     fluid.defaults("gpii.qssWidget.menu.presenter", {
         gradeNames: ["fluid.viewComponent", "gpii.qssWidget.button"],
         model: {
-            item: null
+            item: undefined
         },
         styles: {
             active: "fl-qssWidgetMenu-active",
-            default: "fl-qssWidgetMenu-default"
+            "default": "fl-qssWidgetMenu-default"
         },
         modelListeners: {
             item: {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "text",
                 args: ["{that}.model.item.value"]
             },

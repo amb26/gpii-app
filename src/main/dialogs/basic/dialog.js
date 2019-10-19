@@ -188,7 +188,7 @@ fluid.defaults("gpii.app.dialog", {
                             ]
                         }
                     }
-                },              
+                }
             }
         }
     },
@@ -228,7 +228,7 @@ fluid.defaults("gpii.app.dialog", {
             args: ["{that}", "{that}.model.scaleFactor"]
         },
         "onDestroy.cleanupElectron": {
-            this: "{that}.dialog",
+            "this": "{that}.dialog",
             method: "destroy",
             priority: "last"
         }
@@ -297,7 +297,7 @@ fluid.defaults("gpii.app.dialog", {
             ]
         },
         hideImpl: {
-            this: "{that}.dialog",
+            "this": "{that}.dialog",
             method: "hide"
         },
         show: {
@@ -313,7 +313,7 @@ fluid.defaults("gpii.app.dialog", {
             value: "@expand:fluid.negate({that}.model.isShown)"
         },
         focus: {
-            this: "{that}.dialog",
+            "this": "{that}.dialog",
             method: "focus"
         },
         close: {
@@ -370,7 +370,7 @@ gpii.app.dialog.makeDialog = function (that, windowOptions, url, paramsOption, m
         fluid.set(modelParams, targetPath, sourceValue);
     });
     var params = fluid.extend(true, {}, paramsOption, modelParams);
-    
+
     // Approach for sharing initial options for the renderer process
     // proposed in: https://github.com/electron/electron/issues/1095
     dialog.params = params;

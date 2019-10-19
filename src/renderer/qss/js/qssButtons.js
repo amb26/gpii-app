@@ -44,7 +44,8 @@
      */
     fluid.defaults("gpii.qss.buttonPresenter", {
         gradeNames: [
-            "gpii.app.localisedMessagesReceiver",
+            // TODO: determine how messages actually get around in the renderer
+            // "gpii.app.localisedMessagesReceiver",
             "gpii.qss.qssKeyListener",
             "gpii.app.hoverable",
             "gpii.app.clickable",
@@ -53,9 +54,15 @@
 
         model: {
             item: {
-                value: null
+                value: undefined
             },
             value: "{that}.model.item.value"
+        },
+        markup: {
+            body: "<div class=\"flc-qss-btnChangeIndicator fl-qss-btnChangeIndicator\"></div>" +
+                "<div class=\"flc-qss-btnImage fl-qss-btnImage\"></div>" +
+                "<span class=\"flc-qss-btnLabel fl-qss-btnLabel\"></span>" +
+                "<div class=\"flc-qss-btnCaption fl-qss-btnCaption\"></div>"
         },
 
         modelRelay: {
@@ -76,15 +83,15 @@
             value: {
                 funcName: "{that}.events.onSettingAltered.fire",
                 args: ["{that}.model.item", "{change}.value"],
-                excludeSource: ["init", "gpii.psp.repeater.itemUpdate"]
+                excludeSource: ["init"]
             },
             title: {
-                this: "{that}.dom.title",
+                "this": "{that}.dom.title",
                 method: "text",
                 args: ["{change}.value"]
             },
             "item.tabindex": {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "attr",
                 args: ["tabindex", "{change}.value"]
             }
@@ -406,7 +413,7 @@
 
         invokers: {
             toggleIndicator: {
-                this: "{that}.dom.changeIndicator",
+                "this": "{that}.dom.changeIndicator",
                 method: "toggle",
                 args: [
                     "{arguments}.0" // shouldShow
@@ -429,12 +436,12 @@
 
         listeners: {
             "onCreate.removeButtonStyles": {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "removeClass",
                 args: ["{that}.options.styles.focusable"]
             },
             "onCreate.addButtonStyles": {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "addClass",
                 args: ["{that}.options.styles.disabled"]
             }
@@ -461,7 +468,7 @@
 
         listeners: {
             "onCreate.removeButtonStyles": {
-                this: "{that}.container",
+                "this": "{that}.container",
                 method: "removeClass",
                 args: ["{that}.options.styles.focusable"]
             }
