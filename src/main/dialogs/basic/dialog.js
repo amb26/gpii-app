@@ -137,12 +137,12 @@ fluid.defaults("gpii.app.dialog", {
             width: 800,
             height: 600,
             show: false,
-            frame: true,
+            frame: false, // AMB true
             transparent: true,
             alwaysOnTop: true,
             skipTaskbar: true,
             type: "toolbar",
-            resizable: true
+            resizable: true // AMB true
         },
         filePrefixPath: "src/renderer",
         fileSuffixPath: null,           // e.g. "waitDialog/index.html"

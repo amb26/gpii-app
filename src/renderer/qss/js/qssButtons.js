@@ -35,7 +35,10 @@
             onTabPressed: null
         }
     });
-
+    gpii.qss.setTitle = function (dom, selectorName, value) {
+        var element = dom.locate(selectorName);
+        element.text(value);
+    };
     /**
      * A component that handles interactions with a single QSS button. It is responsible
      * for applying the necessary changes whenever the component is focused or activated,
@@ -86,9 +89,10 @@
                 excludeSource: ["init"]
             },
             title: {
-                "this": "{that}.dom.title",
-                method: "text",
-                args: ["{change}.value"]
+                //"this": "{that}.dom.title",
+                //method: "text",
+                funcName: "gpii.qss.setTitle",
+                args: ["{that}.dom", "title", "{change}.value"]
             },
             "item.tabindex": {
                 "this": "{that}.container",

@@ -185,7 +185,12 @@ gpii.test.invokeFunctionInWebContentsDelayed = function (dialog, func, delay) {
 
     setTimeout(function () {
         gpii.test.invokeFunctionInWebContents(dialog, func).then(function (result) {
-            promise.resolve(result);
+            try {
+                promise.resolve(result);
+            } catch (e) {
+                fluid.log("Error invoking function ", func, ": ", e.toString(), " stack: ", e.stack);
+                promise.reject(e);
+            }
         }, function (error) {
             promise.reject(error);
         });

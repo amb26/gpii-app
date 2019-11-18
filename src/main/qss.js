@@ -32,7 +32,7 @@ require("./common/undoStack.js");
  * from a local configuration file.
  */
 fluid.defaults("gpii.app.qssWrapper", {
-    gradeNames: "fluid.modelComponent",
+    gradeNames: ["fluid.modelComponent", "gpii.app.localisedMessagesReceiver"],
 
     /*
      * Additional options for QSS settings. These are options that are always
@@ -894,7 +894,7 @@ fluid.defaults("gpii.app.qssInWrapper", {
         scaleFactor: "{qssWrapper}.model.scaleFactor",
         settings: "{qssWrapper}.model.settings"
     },
-    config: {
+    config: { // TODO: This is it, the site that causes the corruption - already bridged from modelParamMap
         params: {
             settings: "{qssWrapper}.model.settings"
         }

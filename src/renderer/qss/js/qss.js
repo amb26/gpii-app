@@ -89,9 +89,7 @@
      * @return {String} The grade name of the setting's handler.
      */
     gpii.qss.list.getElementGrade = function (setting, elementGrades, defaultElementGrade) {
-        console.log("getElementGrade for ", setting);
         var settingType = setting.schema.type;
-
         return elementGrades[settingType] || defaultElementGrade;
     };
 
